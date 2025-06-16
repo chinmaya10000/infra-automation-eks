@@ -11,14 +11,11 @@ We follow a modern **GitOps CI/CD model** using:
 
 ## 🔧 Prerequisites
 
-- Terraform >= 1.3
-- AWS CLI (`aws configure`)
-- `kubectl` and `helm` installed
-- GitLab/GitHub repo for:
-  - Application code
-  - K8s manifests (e.g., Kustomize overlays)
-  - Terraform code
-  - ArgoCD application YAMLs
+- Jenkins with AWS CLI, Terraform, and kubectl
+- Terraform AWS provider credentials (or IRSA)
+- S3/DynamoDB for remote backend (optional but recommended)
+- ArgoCD installed in cluster (via Helm or Terraform)
+- GitOps repo already set up and public or accessible via SSH
 
 ---
 

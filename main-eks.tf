@@ -32,7 +32,7 @@ module "vpc" {
 # EKS cluster configuration
 module "eks" {
     source  = "terraform-aws-modules/eks/aws"
-    version = "~> 19.0"
+    version = "~> 20.31"
 
     cluster_name = var.name
     cluster_version = var.k8s_version
@@ -44,9 +44,6 @@ module "eks" {
 
     create_node_security_group = false
     create_cluster_security_group = false
-
-    manage_aws_auth_configmap = true
-    aws_auth_roles = local.aws_k8s_role_mapping
     
     cluster_addons = {
         kube-proxy = {}
@@ -64,4 +61,14 @@ module "eks" {
     }
 
     tags = var.tags
+}
+
+module "eks_aws_auth" {
+  source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
+  version = "~> 20.0"
+
+  cluster_name      = module.eks.cluster_name
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  aws_auth_roles = local.aws_k8s_role_mapping
 }

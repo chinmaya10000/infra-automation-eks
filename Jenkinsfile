@@ -7,7 +7,7 @@ pipeline {
         AWS_ACCESS_KEY_ID     = credentials('jenkins_aws_access_key_id')
         AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_secret_access_key')
         TF_VAR_name = "myapp-eks"
-        TF_VAR_aws_region = "us-west-2"
+        TF_VAR_aws_region = "us-east-2"
     }
 
     options {

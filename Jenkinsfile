@@ -36,7 +36,23 @@ pipeline {
             steps {
                 script {
                     input message: "Approve apply for dev?", ok: "Deploy"
-                    sh 'terraform apply -auto-approve tfplan'
+                    sh 'terraform apply --auto-approve tfplan'
+                }
+            }
+        }
+
+        stage('Configure Kubeconfig') {
+            steps {
+                script {
+                    sh "aws eks update-kubeconfig --region ${TF_VAR_aws_region} --name ${TF_VAR_name}"
+                }
+            }
+        }
+
+        stage('Deploy ArgoCD Application') {
+            steps {
+                script {
+                    sh 'kubectl apply -f online-boutique-argo-app.yaml'
                 }
             }
         }
@@ -45,7 +61,7 @@ pipeline {
             steps {
                 script {
                     input message: "Approve destroy for dev?", ok: "Destroy"
-                    sh 'terraform destroy -auto-approve -var-file="environments/dev.tfvars"'
+                    sh 'terraform destroy --auto-approve -var-file="environments/dev.tfvars"'
                 }
             }
         }

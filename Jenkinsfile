@@ -8,6 +8,8 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_secret_access_key')
         TF_VAR_name = "myapp-eks"
         TF_VAR_aws_region = "us-east-2"
+        TF_VAR_gitops_username = credentials('gitops_username')
+        TF_VAR_gitops_password = credentials('gitops_password')
     }
 
     options {
@@ -52,8 +54,14 @@ pipeline {
         stage('Deploy ArgoCD Application') {
             steps {
                 script {
-                    sh 'kubectl apply -f online-boutique-argo-app.yaml'
+                    sh 'kubectl apply -f argo-application.yaml'
                 }
+            }
+        }
+
+        stage('ArgoCD Sync Status (optional)') {
+            steps {
+                echo '✅ ArgoCD application should be auto-synced. You can also validate manually via UI.'
             }
         }
 

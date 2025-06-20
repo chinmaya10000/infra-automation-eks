@@ -10,12 +10,10 @@ spec:
     repoURL: https://github.com/chinmaya10000/kubernetes-manifest.git
     targetRevision: main
     path: overlays/dev
-    directory:
-      recurse: true
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: solar-system
 
   syncPolicy:
     automated:

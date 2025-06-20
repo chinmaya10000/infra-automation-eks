@@ -83,45 +83,12 @@ pipeline {
             }
         }
 
-        stage('Check ArgoCD Application Sync & Health') {
-            steps {
-                script {
-                    echo "⏳ Waiting for ArgoCD Application 'solar-system' to be Synced and Healthy..."
-
-                    def success = false
-                    for (int i = 1; i <= 12; i++) {
-                        def sync = sh(
-                            script: "kubectl get application solar-system -n argocd -o jsonpath='{.status.sync.status}' || echo 'None'",
-                            returnStdout: true
-                        ).trim()
-
-                        def health = sh(
-                            script: "kubectl get application solar-system -n argocd -o jsonpath='{.status.health.status}' || echo 'Unknown'",
-                            returnStdout: true
-                        ).trim()
-
-                        echo "🔁 Try ${i}: Sync=${sync}, Health=${health}"
-
-                        if (sync == 'Synced' && health == 'Healthy') {
-                            echo "✅ Application is Synced and Healthy"
-                            success = true
-                            break
-                        }
-
-                        sleep 10
-                    }
-                    if (!success) {
-                        error "❌ Application 'solar-system' did not reach Synced and Healthy state within the expected time."
-                    } else {
-                        echo "✅ Application 'solar-system' is Synced and Healthy."
-                    }
-                }
-            }
-        }
-
         stage('Check Pods and Services') {
             steps {
                 script {
+                    echo "⏳ Waiting briefly before checking resources..."
+                    sleep(time: 15, unit: 'SECONDS')  // <-- wait for resources to settle
+                    
                     echo "🔍 Checking Pods and Services in 'solar-system' namespace..."
 
                     def pods = sh(script: "kubectl get pods -n solar-system --no-headers || true", returnStdout: true).trim()

@@ -1,6 +1,6 @@
-# CI/CD Pipelines for EKS, Docker, and ArgoCD GitOps
+# Jenkins Pipeline for EKS, Terraform & ArgoCD Deployment
 
-This repository contains Jenkins pipeline scripts for a complete CI/CD workflow using AWS EKS, Docker, ECR, and ArgoCD with GitOps.  
+This repository contains a Jenkins pipeline script that automates the provisioning of an EKS cluster with Terraform and deploys an application using ArgoCD. The pipeline includes validation steps to ensure your cluster and deployment are healthy and cleans up resources at the end.  
 The workflow is split into two parts:
 
 - **CI Pipeline**: Builds and pushes Docker images, and updates a GitOps repository with the new image tag.
@@ -48,11 +48,6 @@ The workflow is split into two parts:
 
 - **Jenkins** with Pipeline and Credentials Binding plugins.
 - **AWS CLI**, **kubectl**, and **Terraform** installed on the Jenkins agent.
-- **ArgoCD** installed in the target EKS cluster.
-- **AWS ECR** repository for Docker images.
-- **Two GitHub repositories**:
-    - **App Repo**: Contains your application and Dockerfile.
-    - **GitOps Repo**: Contains your Kubernetes manifests (e.g., kustomize) and is watched by ArgoCD.
 
 ---
 
@@ -74,6 +69,37 @@ The workflow is split into two parts:
 │   └── dev.tfvars             # Terraform variable file
 └── ...                        # Other Terraform files/resources
 ```
+## Pipeline Stages
+
+### 1. Terraform Init
+Initializes the Terraform working directory.
+
+### 2. Terraform Plan
+Runs `terraform plan` with the appropriate variables and outputs a plan file.
+
+### 3. Provision Cluster
+With manual approval, applies the Terraform plan to create the EKS cluster.
+
+### 4. Configure Kubeconfig
+Updates kubeconfig for AWS CLI to interact with the new EKS cluster.
+
+### 5. Check EKS Nodes
+Checks if the EKS nodes are ready and available.
+
+### 6. Deploy ArgoCD Application
+Applies the `argo-application.yaml` manifest to deploy the ArgoCD application.
+
+### 7. Check ArgoCD Application Sync & Health
+Waits and checks for the ArgoCD application's status until it's `Synced` and `Healthy`.
+
+### 8. Check Pods and Services
+Lists pods and services in the `solar-system` namespace to confirm deployment.
+
+### 9. Terraform Destroy
+With manual approval, destroys all resources created via Terraform.
+
+### 10. Cleanup & Post Actions
+Cleans up the workspace and outputs the pipeline result.
 
 ---
 

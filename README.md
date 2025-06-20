@@ -69,37 +69,6 @@ The workflow is split into two parts:
 │   └── dev.tfvars             # Terraform variable file
 └── ...                        # Other Terraform files/resources
 ```
-## Pipeline Stages
-
-### 1. Terraform Init
-Initializes the Terraform working directory.
-
-### 2. Terraform Plan
-Runs `terraform plan` with the appropriate variables and outputs a plan file.
-
-### 3. Provision Cluster
-With manual approval, applies the Terraform plan to create the EKS cluster.
-
-### 4. Configure Kubeconfig
-Updates kubeconfig for AWS CLI to interact with the new EKS cluster.
-
-### 5. Check EKS Nodes
-Checks if the EKS nodes are ready and available.
-
-### 6. Deploy ArgoCD Application
-Applies the `argo-application.yaml` manifest to deploy the ArgoCD application.
-
-### 7. Check ArgoCD Application Sync & Health
-Waits and checks for the ArgoCD application's status until it's `Synced` and `Healthy`.
-
-### 8. Check Pods and Services
-Lists pods and services in the `solar-system` namespace to confirm deployment.
-
-### 9. Terraform Destroy
-With manual approval, destroys all resources created via Terraform.
-
-### 10. Cleanup & Post Actions
-Cleans up the workspace and outputs the pipeline result.
 
 ---
 

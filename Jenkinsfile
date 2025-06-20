@@ -8,8 +8,6 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_secret_access_key')
         TF_VAR_name = "myapp-eks"
         TF_VAR_aws_region = "us-east-2"
-        TF_VAR_gitops_username = credentials('gitops_username')
-        TF_VAR_gitops_password = credentials('gitops_password')
     }
 
     options {
@@ -29,7 +27,13 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 script {
-                    sh 'terraform plan -var-file="environments/dev.tfvars" -out=tfplan'
+                    withCredentials([usernamePassword(credentialsId: 'gitops-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh '''
+                            export TF_VAR_gitops_username=$GIT_USER
+                            export TF_VAR_gitops_password=$GIT_PASS
+                            terraform plan -var-file="environments/dev.tfvars" -out=tfplan
+                        '''
+                    }
                 }
             }
         }
@@ -38,7 +42,13 @@ pipeline {
             steps {
                 script {
                     input message: "Approve apply for dev?", ok: "Deploy"
-                    sh 'terraform apply --auto-approve tfplan'
+                    withCredentials([usernamePassword(credentialsId: 'gitops-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh '''
+                            export TF_VAR_gitops_username=$GIT_USER
+                            export TF_VAR_gitops_password=$GIT_PASS
+                            terraform apply --auto-approve tfplan
+                        '''
+                    }
                 }
             }
         }
@@ -69,7 +79,13 @@ pipeline {
             steps {
                 script {
                     input message: "Approve destroy for dev?", ok: "Destroy"
-                    sh 'terraform destroy --auto-approve -var-file="environments/dev.tfvars"'
+                    withCredentials([usernamePassword(credentialsId: 'gitops-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh '''
+                            export TF_VAR_gitops_username=$GIT_USER
+                            export TF_VAR_gitops_password=$GIT_PASS
+                            terraform destroy -auto-approve -var-file="environments/dev.tfvars"
+                        '''
+                    }
                 }
             }
         }

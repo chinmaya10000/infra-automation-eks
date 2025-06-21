@@ -7,7 +7,7 @@ pipeline {
         AWS_ACCESS_KEY_ID     = credentials('jenkins_aws_access_key_id')
         AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_secret_access_key')
         TF_VAR_name = "myapp-eks"
-        TF_VAR_aws_region = "ap-south-1"
+        TF_VAR_aws_region = "us-east-2"
     }
 
     options {
@@ -65,6 +65,7 @@ pipeline {
             steps {
                 script {
                     echo "🔍 Checking EKS nodes..."
+                    sleep(time: 10, unit: 'SECONDS')
                     def nodes = sh(script: "kubectl get nodes --no-headers || true", returnStdout: true).trim()
                     if (nodes) {
                         echo "✅ EKS nodes are ready:\n${nodes}"

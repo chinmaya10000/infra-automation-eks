@@ -1,4 +1,4 @@
-# Jenkins Pipeline for EKS, Terraform & ArgoCD Deployment
+# 🚀 End-to-End GitOps CI/CD Pipeline with Jenkins, Terraform, EKS, and ArgoCD
 
 This repository contains a Jenkins pipeline script that automates the provisioning of an EKS cluster with Terraform and deploys an application using ArgoCD. The pipeline includes validation steps to ensure your cluster and deployment are healthy and cleans up resources at the end.  
 The workflow is split into two parts:
@@ -18,12 +18,11 @@ The workflow is split into two parts:
 
 ### Typical CI Pipeline Steps
 
-1. **Checkout Source Code**
-2. **Build Docker Image**
-3. **Authenticate and Push to ECR**
-4. **Checkout GitOps Repository**
-5. **Update `kustomization.yaml` Image Tag**
-6. **Commit & Push Changes (or Create PR)**
+- 🔨 Building and tagging Docker images
+- 🔒 Running **SonarQube** (static analysis) and **Trivy** (image vulnerability scanning)
+- 📦 Pushing images to **private AWS ECR**
+- 📝 Automatically updating `kustomization.yaml` (image tag) in GitOps repo
+- 🔁 Triggering ArgoCD sync via Git commit
 
 > **Note:**  
 > Your CI pipeline should have access to both the application code repo and the GitOps repo.
@@ -35,12 +34,12 @@ The workflow is split into two parts:
 > **This repository contains the Jenkinsfile for the CD pipeline.**  
 > The CD pipeline does the following:
 
-1. Provisions an EKS cluster using Terraform.
-2. Configures `kubeconfig` for the new cluster.
-3. Deploys the application using ArgoCD (which tracks the GitOps repo).
-4. Waits for the application to become healthy and synced.
-5. Validates that pods and services are running as expected.
-6. Optionally tears down (destroys) the infrastructure.
+1. Provisions EKS and related AWS infrastructure via Terraform
+2. Installs ArgoCD via Helm
+3. Creates an IRSA-enabled ServiceAccount for secure ECR access
+4. Deploys ArgoCD `Application` object linked to GitOps manifests repo
+5. Waits for rollout status and validates service/pod readiness
+6. (Optional) Destroys infra via user approval
 
 ---
 

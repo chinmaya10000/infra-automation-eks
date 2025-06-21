@@ -10,7 +10,7 @@ data "aws_iam_policy_document" "assume_irsa_role" {
 
         condition {
             test = "StringEquals"
-            variable = "${replace(module.eks.oidc_provider_url, "https://", "")}:sub"
+            variable = "${replace(module.eks.oidc_provider, "https://", "")}:sub"
             values = ["system:serviceaccount:solar-system:solar-app-sa"]
         }
     }

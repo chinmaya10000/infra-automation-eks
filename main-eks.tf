@@ -7,7 +7,7 @@ data "aws_availability_zones" "azs" {}
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "5.20.0"
+  version = "6.0.1"
 
   name = var.name
   cidr = var.vpc_cidr_block
@@ -32,7 +32,7 @@ module "vpc" {
 # EKS cluster configuration
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.0"
+  version = "20.37.1"
 
   cluster_name    = var.name
   cluster_version = var.k8s_version
@@ -45,8 +45,8 @@ module "eks" {
   create_node_security_group    = false
   create_cluster_security_group = false
 
-  manage_aws_auth_configmap = true
-  aws_auth_roles            = local.aws_k8s_role_mapping
+  # manage_aws_auth_configmap = true
+  # aws_auth_roles            = local.aws_k8s_role_mapping
 
 
   cluster_addons = {
@@ -65,6 +65,14 @@ module "eks" {
   }
 
   tags = var.tags
+}
+
+module "aws_auth" {
+  source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
+  version = "20.37.1"
+
+  manage_aws_auth_configmap = true
+  aws_auth_roles = local.aws_k8s_role_mapping
 }
 
 module "eks_blueprints_addons" {

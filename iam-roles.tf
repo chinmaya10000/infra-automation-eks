@@ -3,12 +3,12 @@ locals {
     {
       rolearn  = aws_iam_role.external-admin.arn
       username = "admin"
-      groups   = ["none"]
+      groups   = ["system:masters"]
     },
     {
       rolearn  = aws_iam_role.external-developer.arn
       username = "developer"
-      groups   = ["none"]
+      groups   = ["view"]
     }
   ]
 }

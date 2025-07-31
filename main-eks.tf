@@ -56,12 +56,33 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
-    initial = {
-      instance_type = ["t2.medium"]
+    on_demand_group = {
+      ami_type      = "AL2023_x86_64_STANDARD"
+      instance_type = ["t3.medium"]
       min_size      = 2
       max_size      = 7
       desired_size  = 3
+      labels = {
+        workload = "critical"
+      }
     }
+
+    # spot_group = {
+    #   ami_type      = "AL2023_x86_64_STANDARD"
+    #   instance_type = ["t3.medium", "t3a.medium", "t4g.medium"]
+    #   min_size      = 0
+    #   max_size      = 5
+    #   desired_size  = 1
+    #   capacity_type = "SPOT"
+    #   labels = {
+    #     workload = "non-critical"
+    #   }
+    #   taints = [{
+    #     key    = "spotInstance"
+    #     value  = "true"
+    #     effect = "NO_SCHEDULE"
+    #   }]
+    # }
   }
 
   tags = var.tags
@@ -73,6 +94,8 @@ module "aws_auth" {
 
   manage_aws_auth_configmap = true
   aws_auth_roles = local.aws_k8s_role_mapping
+
+  depends_on = [module.eks]
 }
 
 module "eks_blueprints_addons" {

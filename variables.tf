@@ -1,36 +1,42 @@
-variable aws_region {
-    default = "us-east-2"
+variable "aws_region" {
+  description = "The AWS region where the resources will be created."
+  type = string
+  default = "us-east-2"
 }
 
-variable name {
-    default = "myapp-eks"
+variable "env" {
+  description = "The environment for the deployment (e.g., dev, staging, prod)."
+  type = string
+  default = "staging"
 }
 
-variable k8s_version {
-    default = "1.31"
+variable "vpc_cidr_block" {
+  description = "The CIDR block for the VPC."
+  type = string
+  default = "10.0.0.0/16"
 }
 
-variable vpc_cidr_block {
-    default = "10.0.0.0/16"
+variable "name" {
+  description = "The name prefix for all resources."
+  type = string
+  default = "myapp"
 }
 
-variable private_subnet_cidr_blocks {
-    default = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+variable "k8s_version" {
+  description = "The Kubernetes version for the EKS cluster."
+  type = string
+  default = "1.33"
 }
 
-variable public_subnet_cidr_blocks {
-    default = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+variable "tags" {
+  description = "A map of tags to assign to resources."
+  type = map(string)
+  default = {}
 }
 
-variable tags {
-    default = {
-        App = "eks-devops"
-    }
+# NAT gateway HA option
+variable "single_nat_gateway" {
+  description = "Set true for dev/stage, false for prod (one NAT per AZ)"
+  type = bool
+  default = true
 }
-
-variable user_for_admin_role {}
-variable user_for_developer_role {}
-
-variable gitops_url {}
-variable gitops_username {}
-variable gitops_password {}

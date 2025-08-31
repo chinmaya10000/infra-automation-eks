@@ -22,7 +22,15 @@ provider "helm" {
   }  
 }
 
-# EKS Blueprint Add-ons
+# Wait for ALB controller webhook
+resource "null_resource" "wait_for_alb_webhook" {
+  depends_on = [module.eks]
+  provisioner "local-exec" {
+    command = "sleep 60"  # wait for webhook to be ready
+  }
+}
+
+# EKS Blueprints Addons
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "1.22.0"  #ensure to update this to the latest/desired version
@@ -34,6 +42,9 @@ module "eks_blueprints_addons" {
 
   eks_addons = {
     aws-ebs-csi-driver = { most_recent = true }
+    vpc-cni            = { most_recent = true }
+    kube-proxy         = { most_recent = true }
+    coredns            = { most_recent = true }
   }
 
   enable_aws_load_balancer_controller    = true
@@ -68,5 +79,7 @@ module "eks_blueprints_addons" {
   #   ]
   # }
 
-  depends_on = [ module.eks ]
+  depends_on = [
+    null_resource.wait_for_alb_webhook
+  ]
 }

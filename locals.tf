@@ -3,7 +3,11 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
+# Get current region dynamically
+data "aws_region" "current" {}
+
 locals {
+  region = data.aws_region.current.id  # fixes deprecated .name warning
   azs = slice(data.aws_availability_zones.available.names, 0, 3)
 
   # Subnet sizing: /19 per subnet (sufficient for most clusters)

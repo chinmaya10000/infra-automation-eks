@@ -63,7 +63,7 @@ module "eks_blueprints_addons" {
     ]
     set_sensitive = [
         { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-scheme", value = "internet-facing" },
-        { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type", value = "nlb-ip" },
+        { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type", value = "nlb" },
         { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-nlb-target-type", value = "ip" },
         { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-health-check-path", value = "/healthz" },
         { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-health-check-port", value = "10254" },

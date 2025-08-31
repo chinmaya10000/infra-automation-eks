@@ -26,6 +26,12 @@ module "eks" {
 
   tags = local.environment_tags
 
+  addons = {
+    coredns                = {}
+    kube-proxy             = {}
+    vpc-cni                = {}
+  }
+
   depends_on = [ module.vpc ]
 }
 

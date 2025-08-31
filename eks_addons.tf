@@ -39,37 +39,37 @@ module "eks_blueprints_addons" {
     kube-proxy         = { most_recent = true }
   }
 
-#   enable_aws_load_balancer_controller    = true
+  enable_aws_load_balancer_controller    = true
   enable_metrics_server                  = true
-  enable_cert_manager                    = true
-  cert_manager = {
-    most_recent = true
-    namespace   = "cert-manager"
-  }
+  # enable_cert_manager                    = true
+  # cert_manager = {
+  #   most_recent = true
+  #   namespace   = "cert-manager"
+  # }
 
   # NGINX INGRESS CONTROLLER
-  enable_ingress_nginx = true
-  ingress_nginx = {
-    most_recent = true
-    namespace   = "ingress-nginx"
+  # enable_ingress_nginx = true
+  # ingress_nginx = {
+  #   most_recent = true
+  #   namespace   = "ingress-nginx"
 
-    set = [
-        { name = "controller.service.type", value = "LoadBalancer" },
-        { name = "controller.service.externalTrafficPolicy", value = "Local" },
-        { name = "controller.resources.requests.cpu", value = "100m" },
-        { name = "controller.resources.requests.memory", value = "128Mi" },
-        { name = "controller.resources.limits.cpu", value = "200m" },
-        { name = "controller.resources.limits.memory", value = "256Mi" }
-    ]
-    set_sensitive = [
-        { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-scheme", value = "internet-facing" },
-        { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type", value = "nlb" },
-        { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-nlb-target-type", value = "ip" },
-        { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-health-check-path", value = "/healthz" },
-        { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-health-check-port", value = "10254" },
-        { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-health-check-protocol", value = "HTTP" }
-    ]
-  }
+  #   set = [
+  #       { name = "controller.service.type", value = "LoadBalancer" },
+  #       { name = "controller.service.externalTrafficPolicy", value = "Local" },
+  #       { name = "controller.resources.requests.cpu", value = "100m" },
+  #       { name = "controller.resources.requests.memory", value = "128Mi" },
+  #       { name = "controller.resources.limits.cpu", value = "200m" },
+  #       { name = "controller.resources.limits.memory", value = "256Mi" }
+  #   ]
+  #   set_sensitive = [
+  #       { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-scheme", value = "internet-facing" },
+  #       { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type", value = "nlb" },
+  #       { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-nlb-target-type", value = "ip" },
+  #       { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-health-check-path", value = "/healthz" },
+  #       { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-health-check-port", value = "10254" },
+  #       { name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-health-check-protocol", value = "HTTP" }
+  #   ]
+  # }
 
   depends_on = [ module.eks ]
 }

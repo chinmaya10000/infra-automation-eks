@@ -23,16 +23,63 @@ locals {
   public_subnet_tags = merge(
     local.environment_tags,
     {
-        "kubernetes.io/role/elb" = "1"
-        "kubernetes.io/cluster/${var.name}-${var.env}" = "shared"
+      Name = "${var.name}-${var.env}-public-subnet"
+      Type = "public"
+      "kubernetes.io/role/elb" = "1"
+      "kubernetes.io/cluster/${var.name}-${var.env}" = "shared"
     }
   )
 
   private_subnet_tags = merge(
     local.environment_tags,
     {
-        "kubernetes.io/role/internal-elb" = "1"
-        "kubernetes.io/cluster/${var.name}-${var.env}" = "shared"
+      Name = "${var.name}-${var.env}-private-subnet"
+      Type = "private"
+      "kubernetes.io/role/internal-elb" = "1"
+      "kubernetes.io/cluster/${var.name}-${var.env}" = "shared"
+    }
+  )
+
+  # Default route table tags
+  default_route_table_tags = merge(
+    local.environment_tags,
+    {
+      Name = "${var.name}-${var.env}-default-rt"
+      Type = "default"
+    }
+  )
+
+  # NAT / public route tables
+  public_route_table_tags = merge(
+    local.environment_tags,
+    {
+      Name = "${var.name}-${var.env}-public-rt"
+      Type = "public"
+    }
+  )
+
+  private_route_table_tags = merge(
+    local.environment_tags,
+    {
+      Name = "${var.name}-${var.env}-private-rt"
+      Type = "private"
+    }
+  )
+
+  # Default NACL / Security Group tags
+  default_network_acl_tags = merge(
+    local.environment_tags,
+    {
+      Name = "${var.name}-${var.env}-default-nacl"
+      Type = "default"
+    }
+  )
+
+  default_security_group_tags = merge(
+    local.environment_tags,
+    {
+      Name = "${var.name}-${var.env}-default-sg"
+      Type = "default"
     }
   )
 }

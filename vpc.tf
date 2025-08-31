@@ -16,13 +16,21 @@ module "vpc" {
   enable_dns_hostnames = true
   enable_dns_support = true
 
-  manage_default_network_acl = true
-  default_network_acl_tags = merge(local.environment_tags, {Name = "${var.name}-default-nacl"})
+  # NAT / Public Route Tables
+  public_route_table_tags  = local.public_route_table_tags
+  private_route_table_tags = local.private_route_table_tags
+  
+  # Default route table
   manage_default_route_table = true
-  default_route_table_tags = merge(local.environment_tags, {Name = "${var.name}-default-rt"})
+  default_route_table_tags = local.default_route_table_tags
+  
+  # Default NACL and SG
+  manage_default_network_acl = true
+  default_network_acl_tags = local.default_network_acl_tags
   manage_default_security_group = true
-  default_security_group_tags = merge(local.environment_tags, {Name = "${var.name}-default-sg"})
-
+  default_security_group_tags = local.default_security_group_tags
+  
+  # Subnet tags
   public_subnet_tags = local.public_subnet_tags
   private_subnet_tags = local.private_subnet_tags
 

@@ -2,7 +2,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 21.0"
 
-  name = "${var.name}-${var.env}"
+  name = local.cluster_name
   kubernetes_version = var.k8s_version
 
   # Optional
@@ -21,10 +21,10 @@ module "eks" {
   subnet_ids = module.vpc.private_subnets
 
   create_kms_key = true
-  kms_key_description = "KMS key for EKS cluster ${var.name}-${var.env}"
+  kms_key_description = "KMS key for EKS cluster ${local.cluster_name}"
   kms_key_deletion_window_in_days = 7
 
-  tags = local.environment_tags
+  tags = local.common_tags
 
   depends_on = [ module.vpc ]
 }

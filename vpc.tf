@@ -2,7 +2,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "6.0.1"
 
-  name = "${var.name}-${var.env}-vpc"
+  name = "${var.cluster_name}-vpc"
   cidr = var.vpc_cidr_block
 
   azs             = local.azs
@@ -16,23 +16,19 @@ module "vpc" {
   enable_dns_hostnames = true
   enable_dns_support   = true
 
-  # NAT / Public Route Tables
-  public_route_table_tags  = local.public_route_table_tags
-  private_route_table_tags = local.private_route_table_tags
-
   # Default route table
   manage_default_route_table = true
-  default_route_table_tags   = local.default_route_table_tags
+  default_route_table_tags   = { Name = "${var.cluster_name}-default-rt" }
 
   # Default NACL and SG
   manage_default_network_acl    = true
-  default_network_acl_tags      = local.default_network_acl_tags
+  default_network_acl_tags      = { Name = "${var.cluster_name}-default-nacl" }
   manage_default_security_group = true
-  default_security_group_tags   = local.default_security_group_tags
+  default_security_group_tags   = { Name = "${var.cluster_name}-default-sg" }
 
   # Subnet tags
-  public_subnet_tags  = local.public_subnet_tags
-  private_subnet_tags = local.private_subnet_tags
+  public_subnet_tags  = merge(local.common_tags, local.public_subnet_tags)
+  private_subnet_tags = merge(local.common_tags, local.private_subnet_tags)
 
-  tags = local.environment_tags
+  tags = local.common_tags
 }
